@@ -1,8 +1,10 @@
-import React, { useState, useCallback } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useState, useCallback, useEffect } from 'react';
+import { useParams, useLocation } from 'react-router-dom';
 import { FiUser, FiUsers, FiSend } from 'react-icons/fi';
 
 import Toolbar from '../../components/Toolbar';
+
+import useChat from '../../hooks/socket';
 
 import {
   Container,
@@ -23,7 +25,14 @@ interface RoomProps {
 }
 
 const ChatRoom: React.FC = () => {
+  const { state } = useLocation<any>();
+
   const { roomName } = useParams<RoomProps>();
+  const { messages, sendMessage } = useChat(roomName);
+
+  useEffect(() => {
+    console.log(state);
+  }, [state]);
 
   const [activeUsers, setActiveUsers] = useState([
     {
@@ -43,33 +52,38 @@ const ChatRoom: React.FC = () => {
       nickname: 'Joao4',
     },
   ]);
-  const [messages, setMessages] = useState([
-    {
-      user: 'teste@teste.com',
-      nickname: 'Joao',
-      text: 'Minha mensagem de testes',
-    },
-    {
-      user: 'teste2@teste.com',
-      nickname: 'Joao2',
-      text: 'Mensagem de testes 2',
-    },
-    {
-      user: 'teste3@teste.com',
-      nickname: 'Joao3',
-      text: 'Mensagem de testes 3',
-    },
-    {
-      user: 'teste4@teste.com',
-      nickname: 'Joao4',
-      text: 'Mensagem de testes 4',
-    },
-  ]);
+  // const [messages, setMessages] = useState([
+  //   {
+  //     user: 'teste@teste.com',
+  //     nickname: 'Joao',
+  //     text: 'Minha mensagem de testes',
+  //   },
+  //   {
+  //     user: 'teste2@teste.com',
+  //     nickname: 'Joao2',
+  //     text: 'Mensagem de testes 2',
+  //   },
+  //   {
+  //     user: 'teste3@teste.com',
+  //     nickname: 'Joao3',
+  //     text: 'Mensagem de testes 3',
+  //   },
+  //   {
+  //     user: 'teste4@teste.com',
+  //     nickname: 'Joao4',
+  //     text: 'Mensagem de testes 4',
+  //   },
+  // ]);
   const [userMessage, setUserMessage] = useState('');
 
   const handleUpdateUserMessage = useCallback((event) => {
     setUserMessage(event.target.value);
   }, []);
+
+  const handleSendMessage = useCallback(() => {
+    sendMessage(userMessage);
+    setUserMessage('');
+  }, [userMessage, sendMessage]);
 
   return (
     <>
@@ -84,8 +98,8 @@ const ChatRoom: React.FC = () => {
                 {messages.map((message) => {
                   return (
                     <p>
-                      <span className="nickname">{message.nickname}</span>:{' '}
-                      {message.text}
+                      <span className="nickname">{state.nickname}</span>:{' '}
+                      {message.body}
                     </p>
                   );
                 })}
@@ -96,7 +110,7 @@ const ChatRoom: React.FC = () => {
                   placeholder="Digite aqui sua mensagem"
                   onChange={handleUpdateUserMessage}
                 />
-                <button type="button">
+                <button type="button" onClick={handleSendMessage}>
                   <FiSend size={32} />
                 </button>
               </ChatInput>

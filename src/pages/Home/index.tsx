@@ -1,4 +1,5 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
+import { useHistory } from 'react-router-dom';
 
 import { Modal } from 'react-responsive-modal';
 import 'react-responsive-modal/styles.css';
@@ -27,6 +28,7 @@ interface chatRoomsData {
 }
 
 const Home: React.FC = () => {
+  const history = useHistory();
   const [chatRooms, setChatRooms] = useState<chatRoomsData[]>([
     {
       id: 1,
@@ -130,6 +132,7 @@ const Home: React.FC = () => {
     },
   ]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
   const [roomName, setRoomName] = React.useState('');
   const [nickname, setNickname] = React.useState('');
 
@@ -146,10 +149,14 @@ const Home: React.FC = () => {
     setNickname(event.target.value);
   }, []);
 
-  useEffect(() => {
-    console.log('abriu modal');
-    console.log(roomName);
-  }, [isModalOpen, roomName]);
+  const handleCreateChatroom = useCallback(() => {
+    history.push({
+      pathname: `/${roomName}`,
+      state: {
+        nickname,
+      },
+    });
+  }, [roomName, history, nickname]);
 
   return (
     <>
@@ -175,7 +182,9 @@ const Home: React.FC = () => {
                 value={nickname}
                 onChange={handleNicknameChange}
               />
-              <Button>Entrar na Sala</Button>
+              <Button type="button" onClick={handleCreateChatroom}>
+                Entrar na Sala
+              </Button>
             </EnterRoomModalContent>
           </Modal>
         )}
@@ -191,7 +200,9 @@ const Home: React.FC = () => {
               value={roomName}
               onChange={handleRoomNameChange}
             />
-            <Button>Criar Sala</Button>
+            <Button type="submit" onClick={onOpenModal}>
+              Criar Sala
+            </Button>
           </CreateRoomsForm>
           <ChatRoomsList>
             <CustomStickyTable height={480}>
