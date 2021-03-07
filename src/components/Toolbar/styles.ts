@@ -8,7 +8,7 @@ export const Container = styled.div`
   width: 100%;
   height: 50px;
 
-  background: #6519d6;
+  background: #a62c1c;
   position: fixed;
 
   svg {
