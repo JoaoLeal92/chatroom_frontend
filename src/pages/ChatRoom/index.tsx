@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useParams, useLocation } from 'react-router-dom';
 import { FiUser, FiUsers, FiSend } from 'react-icons/fi';
 
@@ -77,9 +77,9 @@ const ChatRoom: React.FC = () => {
   }, []);
 
   const handleSendMessage = useCallback(() => {
-    sendMessage(userMessage);
+    sendMessage(userMessage, state.nickname);
     setUserMessage('');
-  }, [userMessage, sendMessage]);
+  }, [userMessage, sendMessage, state.nickname]);
 
   return (
     <>
@@ -94,7 +94,7 @@ const ChatRoom: React.FC = () => {
                 {messages.map((message) => {
                   return (
                     <p>
-                      <span className="nickname">{state.nickname}</span>:{' '}
+                      <span className="nickname">{message.nickname}</span>:{' '}
                       {message.body}
                     </p>
                   );

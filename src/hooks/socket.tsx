@@ -7,7 +7,7 @@ const SOCKET_SERVER_URL = 'http://localhost:3333';
 interface Message {
   body: string;
   userId: string;
-  // text: string;
+  nickname: string;
 }
 
 const useChat = (roomId: string) => {
@@ -43,10 +43,11 @@ const useChat = (roomId: string) => {
 
   // Sends a message to the server that
   // forwards it to all users in the same room
-  const sendMessage = (messageBody: string) => {
+  const sendMessage = (messageBody: string, nickname: string) => {
     console.log(messageBody);
     if (socketRef.current) {
       socketRef.current.emit(NEW_CHAT_MESSAGE_EVENT, {
+        nickname,
         body: messageBody,
         senderId: socketRef.current.id,
       });
