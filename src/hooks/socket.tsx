@@ -15,10 +15,14 @@ const useChat = (roomId: string) => {
   const socketRef = useRef<typeof Socket>();
 
   useEffect(() => {
-    console.log(messages);
     // Creates a WebSocket connection
     socketRef.current = socketIOClient(SOCKET_SERVER_URL, {
       query: { roomId },
+    });
+
+    // Listens for message history
+    socketRef.current.on('previoustMessages', (messageHistory: Message[]) => {
+      setMessages(() => [...messageHistory]);
     });
 
     // Listens for incoming messages
@@ -44,7 +48,6 @@ const useChat = (roomId: string) => {
   // Sends a message to the server that
   // forwards it to all users in the same room
   const sendMessage = (messageBody: string, nickname: string) => {
-    console.log(messageBody);
     if (socketRef.current) {
       socketRef.current.emit(NEW_CHAT_MESSAGE_EVENT, {
         nickname,
