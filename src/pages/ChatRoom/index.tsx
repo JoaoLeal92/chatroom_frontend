@@ -48,28 +48,6 @@ const ChatRoom: React.FC = () => {
       nickname: 'Joao4',
     },
   ]);
-  // const [messages, setMessages] = useState([
-  //   {
-  //     user: 'teste@teste.com',
-  //     nickname: 'Joao',
-  //     text: 'Minha mensagem de testes',
-  //   },
-  //   {
-  //     user: 'teste2@teste.com',
-  //     nickname: 'Joao2',
-  //     text: 'Mensagem de testes 2',
-  //   },
-  //   {
-  //     user: 'teste3@teste.com',
-  //     nickname: 'Joao3',
-  //     text: 'Mensagem de testes 3',
-  //   },
-  //   {
-  //     user: 'teste4@teste.com',
-  //     nickname: 'Joao4',
-  //     text: 'Mensagem de testes 4',
-  //   },
-  // ]);
   const [userMessage, setUserMessage] = useState('');
 
   const handleUpdateUserMessage = useCallback((event) => {

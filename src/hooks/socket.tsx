@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import socketIOClient, { Socket } from 'socket.io-client';
 
-const NEW_CHAT_MESSAGE_EVENT = 'newChatMessage'; // Name of the event
 const SOCKET_SERVER_URL = 'http://localhost:3333';
 
 interface Message {
@@ -10,23 +9,45 @@ interface Message {
   nickname: string;
 }
 
-const useChat = (roomId: string) => {
+interface UseChatReturn {
+  messages: Message[];
+  sendMessage(messageBody: string, nickname: string): void;
+  // initialMessage: string;
+}
+
+const useChat = (roomId: string): UseChatReturn => {
   const [messages, setMessages] = useState<Message[]>([]); // Sent and received messages
+  // const [initialMessage, setInitialMessage] = useState<string>('');
   const socketRef = useRef<typeof Socket>();
 
   useEffect(() => {
+    socketRef.current = socketIOClient(SOCKET_SERVER_URL, {
+      query: { roomId },
+    });
+
+    socketRef.current?.on(
+      'previoustMessages',
+      (serverMessageHistory: Message[]) => {
+        setMessages(serverMessageHistory);
+      },
+    );
+
+    return () => {
+      if (socketRef.current) {
+        socketRef.current.disconnect();
+      }
+    };
+  }, [roomId]);
+
+  useEffect(() => {
+    const messageHistory: Message[] = [];
     // Creates a WebSocket connection
     socketRef.current = socketIOClient(SOCKET_SERVER_URL, {
       query: { roomId },
     });
 
-    // Listens for message history
-    socketRef.current.on('previoustMessages', (messageHistory: Message[]) => {
-      setMessages(() => [...messageHistory]);
-    });
-
     // Listens for incoming messages
-    socketRef.current.on(NEW_CHAT_MESSAGE_EVENT, (message: any) => {
+    socketRef.current.on('newChatMessage', (message: any) => {
       if (socketRef.current) {
         const incomingMessage = {
           ...message,
@@ -49,7 +70,7 @@ const useChat = (roomId: string) => {
   // forwards it to all users in the same room
   const sendMessage = (messageBody: string, nickname: string) => {
     if (socketRef.current) {
-      socketRef.current.emit(NEW_CHAT_MESSAGE_EVENT, {
+      socketRef.current.emit('newChatMessage', {
         nickname,
         body: messageBody,
         senderId: socketRef.current.id,
