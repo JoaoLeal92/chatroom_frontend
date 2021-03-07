@@ -70,7 +70,8 @@ export const ChatRoomsList = styled.div`
 
     th {
       font-size: 22px;
-      background-color: #ababab;
+      background-color: #373737;
+      color: #dedede;
       padding: 8px 0;
     }
 
@@ -81,7 +82,7 @@ export const ChatRoomsList = styled.div`
     }
 
     tr:hover {
-      background-color: #ababab;
+      background-color: #ababaa;
     }
   }
 `;
