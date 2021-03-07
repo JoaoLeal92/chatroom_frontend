@@ -95,7 +95,7 @@ export const EnterRoomModalContent = styled.div`
   width: 550px;
   height: 200px;
 
-  background: #6519d6;
+  background: #d44332;
 
   display: flex;
   flex-direction: column;
@@ -111,7 +111,7 @@ export const EnterRoomModalHeader = styled.h2`
   width: 100%;
   height: 50px;
 
-  background-color: #8849e2;
+  background-color: #a62c1c;
 
   display: flex;
   align-items: center;
