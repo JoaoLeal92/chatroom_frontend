@@ -30,10 +30,6 @@ const ChatRoom: React.FC = () => {
   const { roomName } = useParams<RoomProps>();
   const { messages, sendMessage } = useChat(roomName);
 
-  useEffect(() => {
-    console.log(state);
-  }, [state]);
-
   const [activeUsers, setActiveUsers] = useState([
     {
       id: 1,
