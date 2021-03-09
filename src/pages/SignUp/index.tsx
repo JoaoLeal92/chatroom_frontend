@@ -57,7 +57,7 @@ const SignUp: React.FC = () => {
               <Input name="name" placeholder="Nome" />
               <Input name="email" placeholder="E-mail" />
               <Input name="dateOfBirth" placeholder="Data de nascimento" />
-              <Input name="password" placeholder="Senha" />
+              <Input name="password" placeholder="Senha" type="password" />
               <Button>Cadastrar</Button>
             </Form>
           </SignUpBoxContent>
