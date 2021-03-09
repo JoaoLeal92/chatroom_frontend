@@ -102,6 +102,16 @@ export const RoomInfo = styled.div`
   font-weight: bold;
 
   padding: 16px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  button {
+    /* width: 100%; */
+    position: absolute;
+    bottom: 7%;
+  }
 `;
 
 export const InfoTitle = styled.div`

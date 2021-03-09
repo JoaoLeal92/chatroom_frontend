@@ -9,4 +9,5 @@ export const Container = styled.button`
   background: #dedede;
   font-weight: 500;
   transition: background-color 0.2s;
+  margin-bottom: 12px;
 `;

@@ -5,6 +5,9 @@ import { Modal } from 'react-responsive-modal';
 import 'react-responsive-modal/styles.css';
 import '../../assets/enter-room-modal.css';
 
+// import { Form } from '@unform/web';
+import { FormHandles } from '@unform/core';
+
 import Toolbar from '../../components/Toolbar';
 import Button from '../../components/Button';
 import Input from '../../components/Input';
@@ -19,6 +22,8 @@ import {
   CustomStickyTable,
   EnterRoomModalContent,
   EnterRoomModalHeader,
+  CreateRoomForm,
+  ChooseNicknameForm,
 } from './styles';
 
 interface chatRoomsData {
@@ -28,6 +33,9 @@ interface chatRoomsData {
 }
 
 const Home: React.FC = () => {
+  const createRoomFormRef = useRef<FormHandles>(null);
+  const chooseNicknameFormRef = useRef<FormHandles>(null);
+
   const history = useHistory();
   const [chatRooms, setChatRooms] = useState<chatRoomsData[]>([
     {
@@ -177,14 +185,18 @@ const Home: React.FC = () => {
               Insira um apelido abaixo para entrar na sala!
             </EnterRoomModalHeader>
             <EnterRoomModalContent>
-              <Input
-                placeholder="Insira um apelido"
-                value={nickname}
-                onChange={handleNicknameChange}
-              />
-              <Button type="button" onClick={handleCreateChatroom}>
-                Entrar na Sala
-              </Button>
+              <ChooseNicknameForm
+                ref={chooseNicknameFormRef}
+                onSubmit={handleCreateChatroom}
+              >
+                <Input
+                  name="nickname"
+                  placeholder="Insira um apelido"
+                  value={nickname}
+                  onChange={handleNicknameChange}
+                />
+                <Button type="submit">Entrar na Sala</Button>
+              </ChooseNicknameForm>
             </EnterRoomModalContent>
           </Modal>
         )}
@@ -195,14 +207,15 @@ const Home: React.FC = () => {
             nome e crie uma nova sala!
           </ChatRoomsDescription>
           <CreateRoomsForm>
-            <Input
-              placeholder="Digite o nome da sala"
-              value={roomName}
-              onChange={handleRoomNameChange}
-            />
-            <Button type="submit" onClick={onOpenModal}>
-              Criar Sala
-            </Button>
+            <CreateRoomForm ref={createRoomFormRef} onSubmit={onOpenModal}>
+              <Input
+                name="roomName"
+                placeholder="Digite o nome da sala"
+                value={roomName}
+                onChange={handleRoomNameChange}
+              />
+              <Button type="submit">Criar Sala</Button>
+            </CreateRoomForm>
           </CreateRoomsForm>
           <ChatRoomsList>
             <CustomStickyTable height={480}>

@@ -1,6 +1,8 @@
 import styled from 'styled-components';
 import StickyTable from 'react-sticky-table-thead';
 
+import { Form as UnformForm } from '@unform/web';
+
 export const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -121,4 +123,19 @@ export const EnterRoomModalHeader = styled.h2`
 
   color: #dedede;
   font-weight: bold;
+`;
+
+export const CreateRoomForm = styled(UnformForm)`
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+`;
+
+export const ChooseNicknameForm = styled(UnformForm)`
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
 `;
