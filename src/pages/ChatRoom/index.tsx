@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { useParams, useLocation } from 'react-router-dom';
+import { useParams, useLocation, useHistory } from 'react-router-dom';
 import { FiUser, FiUsers, FiSend } from 'react-icons/fi';
 
 import Toolbar from '../../components/Toolbar';
@@ -19,16 +19,21 @@ import {
   UsersList,
   User,
 } from './styles';
+import Button from '../../components/Button';
 
 interface RoomProps {
   roomName: string;
 }
 
 const ChatRoom: React.FC = () => {
+  const history = useHistory();
   const { state } = useLocation<any>();
 
   const { roomName } = useParams<RoomProps>();
-  const { messages, sendMessage } = useChat(roomName);
+  const { messages, sendMessage, leaveRoom } = useChat(
+    roomName,
+    state.nickname,
+  );
 
   const [activeUsers, setActiveUsers] = useState([
     {
@@ -58,6 +63,11 @@ const ChatRoom: React.FC = () => {
     sendMessage(userMessage, state.nickname);
     setUserMessage('');
   }, [userMessage, sendMessage, state.nickname]);
+
+  const handleLeaveRoom = useCallback(() => {
+    leaveRoom(state.nickname);
+    history.push('/');
+  }, [state.nickname, history, leaveRoom]);
 
   return (
     <>
@@ -105,6 +115,9 @@ const ChatRoom: React.FC = () => {
                   );
                 })}
               </UsersList>
+              <Button type="button" onClick={handleLeaveRoom}>
+                Sair da Sala
+              </Button>
             </RoomInfo>
           </ChatArea>
         </InterfaceArea>

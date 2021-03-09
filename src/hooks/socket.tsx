@@ -5,24 +5,27 @@ const SOCKET_SERVER_URL = 'http://localhost:3333';
 
 interface Message {
   body: string;
-  userId: string;
+  senderId: string;
   nickname: string;
 }
 
 interface UseChatReturn {
   messages: Message[];
+  // newUserMessage: undefined | Message;
   sendMessage(messageBody: string, nickname: string): void;
+  leaveRoom(nickname: string): void;
   // initialMessage: string;
 }
 
-const useChat = (roomId: string): UseChatReturn => {
+const useChat = (roomId: string, username: string): UseChatReturn => {
   const [messages, setMessages] = useState<Message[]>([]); // Sent and received messages
+  // const [newUserMessage, setNewUserMessage] = useState<Message>(); // Sent and received messages
   // const [initialMessage, setInitialMessage] = useState<string>('');
   const socketRef = useRef<typeof Socket>();
 
   useEffect(() => {
     socketRef.current = socketIOClient(SOCKET_SERVER_URL, {
-      query: { roomId },
+      query: { roomId, username },
     });
 
     socketRef.current?.on(
@@ -37,24 +40,21 @@ const useChat = (roomId: string): UseChatReturn => {
         socketRef.current.disconnect();
       }
     };
-  }, [roomId]);
+  }, [roomId, username]);
 
   useEffect(() => {
-    const messageHistory: Message[] = [];
     // Creates a WebSocket connection
     socketRef.current = socketIOClient(SOCKET_SERVER_URL, {
-      query: { roomId },
+      query: { roomId, username },
     });
 
     // Listens for incoming messages
-    socketRef.current.on('newChatMessage', (message: any) => {
-      if (socketRef.current) {
-        const incomingMessage = {
-          ...message,
-          ownedByCurrentUser: message.senderId === socketRef.current.id,
-        };
-        setMessages((currentMessages) => [...currentMessages, incomingMessage]);
-      }
+    socketRef.current.on('newChatMessage', (message: Message) => {
+      const incomingMessage = {
+        ...message,
+        ownedByCurrentUser: message.senderId === socketRef.current?.id,
+      };
+      setMessages((currentMessages) => [...currentMessages, incomingMessage]);
     });
 
     // Destroys the socket reference
@@ -64,7 +64,7 @@ const useChat = (roomId: string): UseChatReturn => {
         socketRef.current.disconnect();
       }
     };
-  }, [roomId, messages]);
+  }, [roomId, messages, username]);
 
   // Sends a message to the server that
   // forwards it to all users in the same room
@@ -78,7 +78,15 @@ const useChat = (roomId: string): UseChatReturn => {
     }
   };
 
-  return { messages, sendMessage };
+  const leaveRoom = (nickname: string) => {
+    if (socketRef.current) {
+      socketRef.current.emit('leaveRoom', {
+        nickname,
+      });
+    }
+  };
+
+  return { messages, sendMessage, leaveRoom };
 };
 
 export default useChat;
