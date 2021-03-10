@@ -37,24 +37,6 @@ const ChatRoom: React.FC = () => {
     state.nickname,
   );
 
-  // const [activeUsers, setActiveUsers] = useState([
-  //   {
-  //     id: 1,
-  //     nickname: 'Joao',
-  //   },
-  //   {
-  //     id: 2,
-  //     nickname: 'Joao2',
-  //   },
-  //   {
-  //     id: 3,
-  //     nickname: 'Joao3',
-  //   },
-  //   {
-  //     id: 4,
-  //     nickname: 'Joao4',
-  //   },
-  // ]);
   const [userMessage, setUserMessage] = useState('');
 
   const handleUpdateUserMessage = useCallback((event) => {

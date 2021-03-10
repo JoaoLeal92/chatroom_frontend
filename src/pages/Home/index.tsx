@@ -8,7 +8,7 @@ import '../../assets/enter-room-modal.css';
 // import { Form } from '@unform/web';
 import { FormHandles } from '@unform/core';
 
-import { useAuth } from '../../hooks/auth';
+import useChat from '../../hooks/socket';
 
 import Toolbar from '../../components/Toolbar';
 import Button from '../../components/Button';
@@ -28,125 +28,17 @@ import {
   ChooseNicknameForm,
 } from './styles';
 
-interface chatRoomsData {
-  id: number;
-  roomName: string;
-  activeUsers: number;
-}
-
 const Home: React.FC = () => {
-  const { user } = useAuth();
-
   const createRoomFormRef = useRef<FormHandles>(null);
   const chooseNicknameFormRef = useRef<FormHandles>(null);
 
+  const { roomsData } = useChat('homePage', 'homePage');
+
   const history = useHistory();
-  const [chatRooms, setChatRooms] = useState<chatRoomsData[]>([
-    {
-      id: 1,
-      roomName: 'Sala 1',
-      activeUsers: 2,
-    },
-    {
-      id: 2,
-      roomName: 'Sala 2',
-      activeUsers: 5,
-    },
-    {
-      id: 3,
-      roomName: 'Sala 3',
-      activeUsers: 12,
-    },
-    {
-      id: 4,
-      roomName: 'Sala 4',
-      activeUsers: 22,
-    },
-    {
-      id: 5,
-      roomName: 'Sala 1',
-      activeUsers: 2,
-    },
-    {
-      id: 6,
-      roomName: 'Sala 2',
-      activeUsers: 5,
-    },
-    {
-      id: 7,
-      roomName: 'Sala 3',
-      activeUsers: 12,
-    },
-    {
-      id: 8,
-      roomName: 'Sala 4',
-      activeUsers: 22,
-    },
-    {
-      id: 9,
-      roomName: 'Sala 1',
-      activeUsers: 2,
-    },
-    {
-      id: 10,
-      roomName: 'Sala 2',
-      activeUsers: 5,
-    },
-    {
-      id: 11,
-      roomName: 'Sala 3',
-      activeUsers: 12,
-    },
-    {
-      id: 12,
-      roomName: 'Sala 4',
-      activeUsers: 22,
-    },
-    {
-      id: 13,
-      roomName: 'Sala 1',
-      activeUsers: 2,
-    },
-    {
-      id: 14,
-      roomName: 'Sala 2',
-      activeUsers: 5,
-    },
-    {
-      id: 15,
-      roomName: 'Sala 3',
-      activeUsers: 12,
-    },
-    {
-      id: 16,
-      roomName: 'Sala 4',
-      activeUsers: 22,
-    },
-    {
-      id: 17,
-      roomName: 'Sala 1',
-      activeUsers: 2,
-    },
-    {
-      id: 18,
-      roomName: 'Sala 2',
-      activeUsers: 5,
-    },
-    {
-      id: 19,
-      roomName: 'Sala 3',
-      activeUsers: 12,
-    },
-    {
-      id: 20,
-      roomName: 'Sala 4',
-      activeUsers: 22,
-    },
-  ]);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const [roomName, setRoomName] = React.useState('');
-  const [nickname, setNickname] = React.useState('');
+  const [roomName, setRoomName] = useState('');
+  const [nickname, setNickname] = useState('');
 
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -159,6 +51,11 @@ const Home: React.FC = () => {
 
   const handleNicknameChange = useCallback((event) => {
     setNickname(event.target.value);
+  }, []);
+
+  const handleClickRoomOnTable = useCallback((room: string) => {
+    setRoomName(room);
+    setIsModalOpen(true);
   }, []);
 
   const handleCreateChatroom = useCallback(() => {
@@ -231,12 +128,14 @@ const Home: React.FC = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {chatRooms.length > 0 &&
-                    chatRooms.map((room) => {
+                  {roomsData.length > 0 &&
+                    roomsData.map((room) => {
                       return (
-                        <tr key={room.id} onClick={onOpenModal}>
+                        <tr
+                          onClick={() => handleClickRoomOnTable(room.roomName)}
+                        >
                           <td>{room.roomName}</td>
-                          <td>{room.activeUsers}</td>
+                          <td>{room.numberOfUsers}</td>
                         </tr>
                       );
                     })}

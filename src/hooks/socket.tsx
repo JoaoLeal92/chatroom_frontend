@@ -9,17 +9,24 @@ interface Message {
   nickname: string;
 }
 
+interface RoomInfo {
+  roomName: string;
+  numberOfUsers: number;
+}
+
 interface UseChatReturn {
   messages: Message[];
   // newUserMessage: undefined | Message;
   sendMessage(messageBody: string, nickname: string): void;
   leaveRoom(nickname: string): void;
   activeUsers: string[];
+  roomsData: RoomInfo[];
 }
 
 const useChat = (roomId: string, username: string): UseChatReturn => {
   const [messages, setMessages] = useState<Message[]>([]); // Sent and received messages
   const [activeUsers, setActiveUsers] = useState<string[]>([]); // Users in room
+  const [roomsData, setRoomsData] = useState<RoomInfo[]>([]); // Users in room
   const socketRef = useRef<typeof Socket>();
 
   useEffect(() => {
@@ -69,6 +76,7 @@ const useChat = (roomId: string, username: string): UseChatReturn => {
         ...message,
         ownedByCurrentUser: message.senderId === socketRef.current?.id,
       };
+      console.log(message);
       setMessages((currentMessages) => [...currentMessages, incomingMessage]);
     });
 
@@ -81,11 +89,34 @@ const useChat = (roomId: string, username: string): UseChatReturn => {
     };
   }, [roomId, messages, username]);
 
+  // eslint-disable-next-line consistent-return
+  useEffect(() => {
+    if (username === 'homePage' && roomId === 'homePage') {
+      // Creates a WebSocket connection
+      socketRef.current = socketIOClient(SOCKET_SERVER_URL, {
+        query: { roomId, username },
+      });
+
+      // Listens for incoming messages
+      socketRef.current.on('roomsInfo', (rooms: RoomInfo[]) => {
+        setRoomsData(rooms);
+      });
+
+      // Destroys the socket reference
+      // when the connection is closed
+      return () => {
+        if (socketRef.current) {
+          socketRef.current.disconnect();
+        }
+      };
+    }
+  }, [roomId, messages, username]);
+
   // Sends a message to the server that
   // forwards it to all users in the same room
   const sendMessage = (messageBody: string, nickname: string) => {
     if (socketRef.current) {
-      socketRef.current.emit('newChatMessage', {
+      socketRef.current.emit('sendMessage', {
         nickname,
         body: messageBody,
         senderId: socketRef.current.id,
@@ -101,7 +132,7 @@ const useChat = (roomId: string, username: string): UseChatReturn => {
     }
   };
 
-  return { messages, sendMessage, leaveRoom, activeUsers };
+  return { messages, sendMessage, leaveRoom, activeUsers, roomsData };
 };
 
 export default useChat;
