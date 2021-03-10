@@ -1,10 +1,11 @@
 import React, { useState, useCallback } from 'react';
-import { useParams, useLocation, useHistory } from 'react-router-dom';
+import { useParams, useLocation, useHistory, Link } from 'react-router-dom';
 import { FiUser, FiUsers, FiSend } from 'react-icons/fi';
 
 import Toolbar from '../../components/Toolbar';
 
 import useChat from '../../hooks/socket';
+import { useAuth } from '../../hooks/auth';
 
 import {
   Container,
@@ -26,6 +27,7 @@ interface RoomProps {
 }
 
 const ChatRoom: React.FC = () => {
+  const { user } = useAuth();
   const history = useHistory();
   const { state } = useLocation<any>();
 
@@ -60,8 +62,10 @@ const ChatRoom: React.FC = () => {
   }, []);
 
   const handleSendMessage = useCallback(() => {
-    sendMessage(userMessage, state.nickname);
-    setUserMessage('');
+    if (userMessage) {
+      sendMessage(userMessage, state.nickname);
+      setUserMessage('');
+    }
   }, [userMessage, sendMessage, state.nickname]);
 
   const handleLeaveRoom = useCallback(() => {
@@ -89,14 +93,25 @@ const ChatRoom: React.FC = () => {
                 })}
               </ChatHistory>
               <ChatInput>
-                <input
-                  value={userMessage}
-                  placeholder="Digite aqui sua mensagem"
-                  onChange={handleUpdateUserMessage}
-                />
-                <button type="button" onClick={handleSendMessage}>
-                  <FiSend size={32} />
-                </button>
+                {!user ? (
+                  <>
+                    <div>
+                      Faça seu login <Link to="/signin">aqui</Link> para poder
+                      interagir na sala
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <input
+                      value={userMessage}
+                      placeholder="Digite aqui sua mensagem"
+                      onChange={handleUpdateUserMessage}
+                    />
+                    <button type="button" onClick={handleSendMessage}>
+                      <FiSend size={32} />
+                    </button>
+                  </>
+                )}
               </ChatInput>
             </ChatWindow>
             {/* Users in the room */}
@@ -106,11 +121,11 @@ const ChatRoom: React.FC = () => {
                 Usuários
               </InfoTitle>
               <UsersList>
-                {activeUsers.map((user) => {
+                {activeUsers.map((activeUser) => {
                   return (
-                    <User key={user.id}>
+                    <User key={activeUser.id}>
                       <FiUser />
-                      <div>{user.nickname}</div>
+                      <div>{activeUser.nickname}</div>
                     </User>
                   );
                 })}

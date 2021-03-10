@@ -90,6 +90,10 @@ export const ChatInput = styled.div`
     /* background-color: #d44332; */
     background: transparent;
   }
+
+  div {
+    margin-left: 10px;
+  }
 `;
 
 export const RoomInfo = styled.div`
