@@ -4,7 +4,11 @@ import { Link } from 'react-router-dom';
 import { FiMessageCircle } from 'react-icons/fi';
 import { Container, Title, Links } from './styles';
 
+import { useAuth } from '../../hooks/auth';
+
 const Toolbar: React.FC = () => {
+  const { user, signOut } = useAuth();
+
   return (
     <Container>
       <FiMessageCircle />
@@ -13,8 +17,16 @@ const Toolbar: React.FC = () => {
       </Link>
 
       <Links>
-        <Link to="/signin">Sign in</Link>
-        <Link to="/signup">Sign up</Link>
+        {!user ? (
+          <>
+            <Link to="/signin">Sign in</Link>
+            <Link to="/signup">Sign up</Link>
+          </>
+        ) : (
+          <Link to="/" onClick={signOut}>
+            Sign out
+          </Link>
+        )}
       </Links>
     </Container>
   );
