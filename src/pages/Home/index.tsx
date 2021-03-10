@@ -8,6 +8,8 @@ import '../../assets/enter-room-modal.css';
 // import { Form } from '@unform/web';
 import { FormHandles } from '@unform/core';
 
+import { useAuth } from '../../hooks/auth';
+
 import Toolbar from '../../components/Toolbar';
 import Button from '../../components/Button';
 import Input from '../../components/Input';
@@ -33,6 +35,8 @@ interface chatRoomsData {
 }
 
 const Home: React.FC = () => {
+  const { user } = useAuth();
+
   const createRoomFormRef = useRef<FormHandles>(null);
   const chooseNicknameFormRef = useRef<FormHandles>(null);
 

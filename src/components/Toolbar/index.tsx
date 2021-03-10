@@ -13,7 +13,7 @@ const Toolbar: React.FC = () => {
       </Link>
 
       <Links>
-        <Link to="/">Sign in</Link>
+        <Link to="/signin">Sign in</Link>
         <Link to="/signup">Sign up</Link>
       </Links>
     </Container>
