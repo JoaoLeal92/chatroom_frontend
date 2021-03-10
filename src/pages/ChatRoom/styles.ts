@@ -57,6 +57,9 @@ export const ChatHistory = styled.div`
 
   padding: 24px;
 
+  overflow-y: scroll;
+  overflow-wrap: break-word;
+
   p {
     font-size: 20px;
     margin-top: 20px;
