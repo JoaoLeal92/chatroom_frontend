@@ -14,14 +14,29 @@ interface UseChatReturn {
   // newUserMessage: undefined | Message;
   sendMessage(messageBody: string, nickname: string): void;
   leaveRoom(nickname: string): void;
-  // initialMessage: string;
+  activeUsers: string[];
 }
 
 const useChat = (roomId: string, username: string): UseChatReturn => {
   const [messages, setMessages] = useState<Message[]>([]); // Sent and received messages
-  // const [newUserMessage, setNewUserMessage] = useState<Message>(); // Sent and received messages
-  // const [initialMessage, setInitialMessage] = useState<string>('');
+  const [activeUsers, setActiveUsers] = useState<string[]>([]); // Users in room
   const socketRef = useRef<typeof Socket>();
+
+  useEffect(() => {
+    socketRef.current = socketIOClient(SOCKET_SERVER_URL, {
+      query: { roomId, username },
+    });
+
+    socketRef.current?.on('usersInRoom', (currentActiveUsers: string[]) => {
+      setActiveUsers(currentActiveUsers);
+    });
+
+    return () => {
+      if (socketRef.current) {
+        socketRef.current.disconnect();
+      }
+    };
+  }, [roomId, username]);
 
   useEffect(() => {
     socketRef.current = socketIOClient(SOCKET_SERVER_URL, {
@@ -86,7 +101,7 @@ const useChat = (roomId: string, username: string): UseChatReturn => {
     }
   };
 
-  return { messages, sendMessage, leaveRoom };
+  return { messages, sendMessage, leaveRoom, activeUsers };
 };
 
 export default useChat;

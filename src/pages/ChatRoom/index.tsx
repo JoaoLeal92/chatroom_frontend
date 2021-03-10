@@ -32,29 +32,29 @@ const ChatRoom: React.FC = () => {
   const { state } = useLocation<any>();
 
   const { roomName } = useParams<RoomProps>();
-  const { messages, sendMessage, leaveRoom } = useChat(
+  const { messages, sendMessage, leaveRoom, activeUsers } = useChat(
     roomName,
     state.nickname,
   );
 
-  const [activeUsers, setActiveUsers] = useState([
-    {
-      id: 1,
-      nickname: 'Joao',
-    },
-    {
-      id: 2,
-      nickname: 'Joao2',
-    },
-    {
-      id: 3,
-      nickname: 'Joao3',
-    },
-    {
-      id: 4,
-      nickname: 'Joao4',
-    },
-  ]);
+  // const [activeUsers, setActiveUsers] = useState([
+  //   {
+  //     id: 1,
+  //     nickname: 'Joao',
+  //   },
+  //   {
+  //     id: 2,
+  //     nickname: 'Joao2',
+  //   },
+  //   {
+  //     id: 3,
+  //     nickname: 'Joao3',
+  //   },
+  //   {
+  //     id: 4,
+  //     nickname: 'Joao4',
+  //   },
+  // ]);
   const [userMessage, setUserMessage] = useState('');
 
   const handleUpdateUserMessage = useCallback((event) => {
@@ -123,9 +123,9 @@ const ChatRoom: React.FC = () => {
               <UsersList>
                 {activeUsers.map((activeUser) => {
                   return (
-                    <User key={activeUser.id}>
+                    <User>
                       <FiUser />
-                      <div>{activeUser.nickname}</div>
+                      <div>{activeUser}</div>
                     </User>
                   );
                 })}
