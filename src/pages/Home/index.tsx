@@ -31,19 +31,16 @@ import {
 const Home: React.FC = () => {
   const createRoomFormRef = useRef<FormHandles>(null);
   const chooseNicknameFormRef = useRef<FormHandles>(null);
-
+  const containerRef = useRef<HTMLDivElement>(null);
   const { roomsData } = useChat('homePage', 'homePage');
-
   const history = useHistory();
-  const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [roomName, setRoomName] = useState('');
   const [nickname, setNickname] = useState('');
 
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  const onOpenModal = useCallback(() => setIsModalOpen(true), []);
-  const onCloseModal = useCallback(() => setIsModalOpen(false), []);
+  const handleOpenModal = useCallback(() => setIsModalOpen(true), []);
+  const handleCloseModal = useCallback(() => setIsModalOpen(false), []);
 
   const handleRoomNameChange = useCallback((event) => {
     setRoomName(event.target.value);
@@ -72,10 +69,11 @@ const Home: React.FC = () => {
       <Toolbar />
       <Container>
         {isModalOpen && (
+          // Modal for choosing nickname and entering the room
           <Modal
             open={isModalOpen}
             showCloseIcon={false}
-            onClose={onCloseModal}
+            onClose={handleCloseModal}
             center
             classNames={{
               modal: 'enterRoomModal',
@@ -108,7 +106,7 @@ const Home: React.FC = () => {
             nome e crie uma nova sala!
           </ChatRoomsDescription>
           <CreateRoomsForm>
-            <CreateRoomForm ref={createRoomFormRef} onSubmit={onOpenModal}>
+            <CreateRoomForm ref={createRoomFormRef} onSubmit={handleOpenModal}>
               <Input
                 name="roomName"
                 placeholder="Digite o nome da sala"

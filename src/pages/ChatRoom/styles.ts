@@ -90,7 +90,6 @@ export const ChatInput = styled.div`
     width: 48px;
 
     border: 0;
-    /* background-color: #d44332; */
     background: transparent;
   }
 
@@ -115,7 +114,6 @@ export const RoomInfo = styled.div`
   align-items: center;
 
   button {
-    /* width: 100%; */
     position: absolute;
     bottom: 7%;
   }

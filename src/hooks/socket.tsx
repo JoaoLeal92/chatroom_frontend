@@ -26,9 +26,11 @@ interface UseChatReturn {
 const useChat = (roomId: string, username: string): UseChatReturn => {
   const [messages, setMessages] = useState<Message[]>([]); // Sent and received messages
   const [activeUsers, setActiveUsers] = useState<string[]>([]); // Users in room
-  const [roomsData, setRoomsData] = useState<RoomInfo[]>([]); // Users in room
+  const [roomsData, setRoomsData] = useState<RoomInfo[]>([]); // Info on every room available
+
   const socketRef = useRef<typeof Socket>();
 
+  // Get list of current users in chatroom
   useEffect(() => {
     socketRef.current = socketIOClient(SOCKET_SERVER_URL, {
       query: { roomId, username },
@@ -45,6 +47,7 @@ const useChat = (roomId: string, username: string): UseChatReturn => {
     };
   }, [roomId, username]);
 
+  // Get message history
   useEffect(() => {
     socketRef.current = socketIOClient(SOCKET_SERVER_URL, {
       query: { roomId, username },
@@ -64,6 +67,7 @@ const useChat = (roomId: string, username: string): UseChatReturn => {
     };
   }, [roomId, username]);
 
+  // Get new messages when fired
   useEffect(() => {
     // Creates a WebSocket connection
     socketRef.current = socketIOClient(SOCKET_SERVER_URL, {
@@ -80,8 +84,6 @@ const useChat = (roomId: string, username: string): UseChatReturn => {
       setMessages((currentMessages) => [...currentMessages, incomingMessage]);
     });
 
-    // Destroys the socket reference
-    // when the connection is closed
     return () => {
       if (socketRef.current) {
         socketRef.current.disconnect();
@@ -89,21 +91,18 @@ const useChat = (roomId: string, username: string): UseChatReturn => {
     };
   }, [roomId, messages, username]);
 
+  // Gets rooms information for display on home page
   // eslint-disable-next-line consistent-return
   useEffect(() => {
     if (username === 'homePage' && roomId === 'homePage') {
-      // Creates a WebSocket connection
       socketRef.current = socketIOClient(SOCKET_SERVER_URL, {
         query: { roomId, username },
       });
 
-      // Listens for incoming messages
       socketRef.current.on('roomsInfo', (rooms: RoomInfo[]) => {
         setRoomsData(rooms);
       });
 
-      // Destroys the socket reference
-      // when the connection is closed
       return () => {
         if (socketRef.current) {
           socketRef.current.disconnect();
@@ -124,6 +123,7 @@ const useChat = (roomId: string, username: string): UseChatReturn => {
     }
   };
 
+  // Leave chatroom
   const leaveRoom = (nickname: string) => {
     if (socketRef.current) {
       socketRef.current.emit('leaveRoom', {

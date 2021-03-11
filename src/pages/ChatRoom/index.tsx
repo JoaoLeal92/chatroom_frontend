@@ -27,10 +27,9 @@ interface RoomProps {
 }
 
 const ChatRoom: React.FC = () => {
-  const { user } = useAuth();
   const history = useHistory();
+  const { user } = useAuth();
   const { state } = useLocation<any>();
-
   const { roomName } = useParams<RoomProps>();
   const { messages, sendMessage, leaveRoom, activeUsers } = useChat(
     roomName,
