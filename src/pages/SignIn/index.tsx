@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 
 import { Form } from '@unform/web';
@@ -8,13 +8,13 @@ import {
   SignUpBox,
   SignUpBoxHeader,
   SignUpBoxContent,
+  ErrorMessageContainer,
 } from './styles';
 
 import Toolbar from '../../components/Toolbar';
 import Input from '../../components/Input';
 import Button from '../../components/Button';
 
-import api from '../../services/api';
 import { useAuth } from '../../hooks/auth';
 
 interface ISignUpProps {
@@ -30,6 +30,8 @@ const SignUp: React.FC = () => {
 
   const signUpFormRef = useRef<FormHandles>(null);
 
+  const [errorMessage, setErrorMessage] = useState('');
+
   const handleSubmit = useCallback(
     async (data: ISignUpProps) => {
       try {
@@ -37,7 +39,9 @@ const SignUp: React.FC = () => {
 
         history.push('/');
       } catch (err) {
-        console.log(err);
+        setErrorMessage(
+          'Erro ao realizar o login, confira suas credenciais e tente novamente',
+        );
       }
     },
     [history, signIn],
@@ -55,6 +59,9 @@ const SignUp: React.FC = () => {
               <Input name="password" placeholder="Senha" type="password" />
               <Button>Login</Button>
             </Form>
+            {errorMessage && (
+              <ErrorMessageContainer>{errorMessage}</ErrorMessageContainer>
+            )}
           </SignUpBoxContent>
         </SignUpBox>
       </Container>

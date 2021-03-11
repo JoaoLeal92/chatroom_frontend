@@ -59,3 +59,11 @@ export const SignUpBoxContent = styled.div`
     margin: 8px;
   }
 `;
+
+export const ErrorMessageContainer = styled.p`
+  color: #dedede;
+  font-size: 20px;
+
+  margin-top: 8px;
+  text-align: center;
+`;

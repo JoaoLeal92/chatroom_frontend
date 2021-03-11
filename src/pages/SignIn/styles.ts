@@ -15,7 +15,7 @@ export const SignUpBox = styled.div`
   justify-content: center;
 
   width: 25%;
-  height: 30%;
+  height: 35%;
   background-color: #d44332;
 
   border-radius: 10px;
@@ -58,4 +58,12 @@ export const SignUpBoxContent = styled.div`
   input {
     margin: 8px;
   }
+`;
+
+export const ErrorMessageContainer = styled.p`
+  color: #dedede;
+  font-size: 20px;
+
+  margin-top: 8px;
+  text-align: center;
 `;

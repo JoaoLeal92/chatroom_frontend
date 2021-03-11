@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 
 import { Form } from '@unform/web';
@@ -8,6 +8,7 @@ import {
   SignUpBox,
   SignUpBoxHeader,
   SignUpBoxContent,
+  ErrorMessageContainer,
 } from './styles';
 
 import Toolbar from '../../components/Toolbar';
@@ -25,8 +26,9 @@ interface ISignUpProps {
 
 const SignUp: React.FC = () => {
   const history = useHistory();
-
   const signUpFormRef = useRef<FormHandles>(null);
+
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleSubmit = useCallback(
     async (data: ISignUpProps) => {
@@ -40,7 +42,9 @@ const SignUp: React.FC = () => {
 
         history.push('/');
       } catch (err) {
-        console.log(err);
+        setErrorMessage(
+          'Erro ao realizar o cadastro, confira seus dados e tente novamente',
+        );
       }
     },
     [history],
@@ -60,6 +64,9 @@ const SignUp: React.FC = () => {
               <Input name="password" placeholder="Senha" type="password" />
               <Button>Cadastrar</Button>
             </Form>
+            {errorMessage && (
+              <ErrorMessageContainer>{errorMessage}</ErrorMessageContainer>
+            )}
           </SignUpBoxContent>
         </SignUpBox>
       </Container>
