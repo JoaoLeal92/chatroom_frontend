@@ -2,6 +2,25 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## Setup and run demo
+
+### Clone repository
+
+Clone this reposiory with the following command
+
+```
+$ git clone https://github.com/JoaoLeal92/chatroom_frontend.git
+```
+
+### Install dependencies
+
+Run the command below to install project dependencies
+
+```
+$ yarn
+```
+
+
 ## Available Scripts
 
 In the project directory, you can run:
